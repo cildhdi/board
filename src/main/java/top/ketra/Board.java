@@ -155,6 +155,11 @@ public class Board extends JFrame implements MouseMotionListener, MouseListener 
     }
 
     @Override
+    public void mouseReleased(MouseEvent e) {
+        mouseDragged(e);
+    }
+
+    @Override
     public void mouseMoved(MouseEvent e) {
     }
 
@@ -168,9 +173,5 @@ public class Board extends JFrame implements MouseMotionListener, MouseListener 
 
     @Override
     public void mouseExited(MouseEvent arg0) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent arg0) {
     }
 }
