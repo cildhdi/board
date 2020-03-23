@@ -21,7 +21,9 @@ import org.java_websocket.handshake.ServerHandshake;
 import top.ketra.Draws.Draw;
 
 public class Board extends JFrame implements MouseMotionListener, MouseListener {
-    private static final long serialVersionUID = 2L;
+
+    private static final long serialVersionUID = -2194947707840582384L;
+
     WebSocketClient webSocketClient;
     Pattern pattern = Pattern.compile(
             "([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])");
@@ -31,6 +33,7 @@ public class Board extends JFrame implements MouseMotionListener, MouseListener 
     public Board() {
         setBounds(400, 400, 500, 350);
         setTitle("画板主界面");
+        setVisible(true);
         initConnect();
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         addMouseMotionListener(this);
