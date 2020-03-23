@@ -5,6 +5,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
 
 import top.ketra.Global.DrawsType;
 
@@ -20,6 +21,8 @@ public class Tools extends JFrame implements ActionListener {
 
     Tools() {
         setTitle("工具栏");
+        setUndecorated(true);
+        getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
         setLayout(new GridLayout(10, 1));
         initSetBtns();
         add(new JLabel("可用工具:"));
@@ -33,7 +36,7 @@ public class Tools extends JFrame implements ActionListener {
         }
         drawBtns.get(0).setEnabled(false);
         setVisible(true);
-        setBounds(250, 400, 100, 500);
+        setBounds(150, 400, 200, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 

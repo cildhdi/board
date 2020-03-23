@@ -31,7 +31,7 @@ public class Board extends JFrame implements MouseMotionListener, MouseListener 
     private Map<String, Draw> draws = new ConcurrentHashMap<String, Draw>();
 
     public Board() {
-        setBounds(400, 400, 500, 350);
+        setBounds(400, 400, 800, 600);
         setTitle("画板主界面");
         setVisible(true);
         initConnect();
@@ -155,6 +155,7 @@ public class Board extends JFrame implements MouseMotionListener, MouseListener 
     @Override
     public void mousePressed(MouseEvent e) {
         Global.createDraw(e.getPoint());
+        repaint();
     }
 
     @Override

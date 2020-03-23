@@ -11,6 +11,7 @@ public class TwoPointDraw extends Draw {
     @Override
     public void onMouseDown(Point pt) {
         start = pt;
+        end = pt;
     }
 
     @Override
