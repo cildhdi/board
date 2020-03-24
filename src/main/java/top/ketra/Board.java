@@ -90,7 +90,7 @@ public class Board extends JFrame implements MouseMotionListener, MouseListener,
                 JOptionPane.showMessageDialog(this, "打印失败", "提示", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            dispose();
+            System.exit(0);
         }
     }
 
