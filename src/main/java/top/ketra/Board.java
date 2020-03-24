@@ -1,10 +1,7 @@
 package top.ketra;
 
-import java.awt.AWTEvent;
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -14,15 +11,21 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.JFrame;
+import javax.swing.*;
 import org.java_websocket.client.*;
 import org.java_websocket.handshake.ServerHandshake;
 
 import top.ketra.Draws.Draw;
 
-public class Board extends JFrame implements MouseMotionListener, MouseListener {
+public class Board extends JFrame implements MouseMotionListener, MouseListener, ActionListener {
 
     private static final long serialVersionUID = -2194947707840582384L;
+
+    JMenuBar menuBar;
+    JMenu menu;
+    JMenuItem printMenu, exitMenu;
+    JPanel panel;
+    int offsetX, offsetY;
 
     WebSocketClient webSocketClient;
     Pattern pattern = Pattern.compile(
@@ -31,14 +34,64 @@ public class Board extends JFrame implements MouseMotionListener, MouseListener 
     private Map<String, Draw> draws = new ConcurrentHashMap<String, Draw>();
 
     public Board() {
-        setBounds(400, 400, 800, 600);
         setTitle("画板主界面");
+        setUndecorated(true);
+        getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
+        initMenu();
+        initPane();
+        setBounds(400, 400, 800, 600);
         setVisible(true);
         initConnect();
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         addMouseMotionListener(this);
         addMouseListener(this);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+    void initPane() {
+        panel = new JPanel() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                draws.forEach((k, v) -> v.paint(g));
+            }
+        };
+        add(panel);
+        Rectangle wndRc = getBounds(), panRc = panel.getBounds();
+        offsetX = panRc.x - wndRc.x;
+        offsetY = panRc.y - wndRc.y;
+    }
+
+    void initMenu() {
+        menuBar = new JMenuBar();
+        menu = new JMenu("菜单");
+        printMenu = new JMenuItem("打印");
+        exitMenu = new JMenuItem("退出");
+        printMenu.setActionCommand("print");
+        exitMenu.setActionCommand("exit");
+        printMenu.addActionListener(this);
+        exitMenu.addActionListener(this);
+        menu.add(printMenu);
+        menu.add(exitMenu);
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand() == "print") {
+            try {
+                PrintJob printJob = getToolkit().getPrintJob(this, "print", null);
+                Graphics g = printJob.getGraphics();
+                panel.printAll(g);
+                g.dispose();
+                printJob.end();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "打印失败", "提示", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            dispose();
+        }
     }
 
     private void requireAddr() {
@@ -100,7 +153,7 @@ public class Board extends JFrame implements MouseMotionListener, MouseListener 
             if (object instanceof Draw) {
                 Draw draw = (Draw) object;
                 draws.put(draw.getUuid(), draw);
-                repaint();
+                panel.repaint();
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -119,16 +172,16 @@ public class Board extends JFrame implements MouseMotionListener, MouseListener 
 
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        draws.forEach((k, v) -> v.paint(g));
+    Point transformPoint(Point pt) {
+        pt.x -= (menuBar.getX());
+        pt.y -= (menuBar.getHeight() + menuBar.getY());
+        return pt;
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
         if (Global.currentDraw != null && webSocketClient.isOpen()) {
-            Global.currentDraw.onMouseMove(e.getPoint());
+            Global.currentDraw.onMouseMove(transformPoint(e.getPoint()));
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ObjectOutputStream objectOutputStream = null;
             try {
@@ -154,8 +207,8 @@ public class Board extends JFrame implements MouseMotionListener, MouseListener 
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Global.createDraw(e.getPoint());
-        repaint();
+        Global.createDraw(transformPoint(e.getPoint()));
+        panel.repaint();
     }
 
     @Override

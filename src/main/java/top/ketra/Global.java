@@ -3,6 +3,7 @@ package top.ketra;
 import java.awt.*;
 import java.util.UUID;
 
+import top.ketra.Draws.Circle;
 import top.ketra.Draws.Draw;
 import top.ketra.Draws.Ellipse;
 import top.ketra.Draws.Line;
@@ -11,7 +12,7 @@ import top.ketra.Draws.Rect;
 
 public class Global {
     enum DrawsType {
-        直线, 矩形, 椭圆, 画笔
+        直线, 矩形, 圆, 椭圆, 画笔
     }
 
     static String address = "129.211.11.59";
@@ -27,6 +28,9 @@ public class Global {
                 break;
             case 矩形:
                 currentDraw = new Rect();
+                break;
+            case 圆:
+                currentDraw = new Circle();
                 break;
             case 椭圆:
                 currentDraw = new Ellipse();

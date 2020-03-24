@@ -26,6 +26,13 @@ public class Tools extends JFrame implements ActionListener {
         setLayout(new GridLayout(10, 1));
         initSetBtns();
         add(new JLabel("可用工具:"));
+        initTools();
+        setBounds(150, 400, 200, 500);
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+    void initTools() {
         DrawsType[] draws = DrawsType.values();
         for (int i = 0; i < draws.length; i++) {
             JButton button = new JButton(draws[i].toString());
@@ -35,9 +42,6 @@ public class Tools extends JFrame implements ActionListener {
             drawBtns.add(button);
         }
         drawBtns.get(0).setEnabled(false);
-        setVisible(true);
-        setBounds(150, 400, 200, 500);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     void initSetBtns() {
